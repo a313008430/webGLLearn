@@ -1,0 +1,25 @@
+const gulp = require('gulp'),
+    rollup = require('rollup'),
+    ts = require('rollup-plugin-typescript2');
+
+gulp.task('ts', () => {
+    return rollup.rollup({
+        input: './app/App.ts',
+        plugins: [
+            ts({
+                tsconfig: './tsconfig.json',
+            })
+        ]
+    }).then((bundle) => {
+        return bundle.write({
+            file: './index.js',
+            format: 'iife',
+            name: 'App',
+            sourcemap: 'inline'
+        })
+    })
+})
+
+gulp.task('wc', gulp.series('ts', () => {
+    gulp.watch('./app/**/*.ts', gulp.series('ts'))
+}))
